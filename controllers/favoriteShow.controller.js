@@ -1,4 +1,4 @@
-const { FavoriteShow } = require("../models/FavoriteShow.model");
+const { FavoriteShow } = require("../models/favoriteShow.model");
 const { shows } = require("../models/shows.model");
 var ObjectId = require("mongodb").ObjectID;
 ///////////////////////////////////////////////////////////////////////////////
