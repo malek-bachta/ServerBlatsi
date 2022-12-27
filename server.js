@@ -34,6 +34,9 @@ app.use("/api/user", require("./routes/user.route"));
 app.use("/api/movies", require("./routes/movies.route"));
 app.use("/api/events", require("./routes/events.route"));
 app.use("/api/shows", require("./routes/shows.route"));
+app.use("/api/favoriteMovie", require("./routes/favoriteMovie.route"));
+app.use("/api/favoriteEvent", require("./routes/favoriteEvent.route"));
+app.use("/api/favoriteShow", require("./routes/favoriteShow.route"));
 
 //////////////////////////////////////////////////////////////////////////////
 app.listen(PORT, () => {
