@@ -1,7 +1,8 @@
 const { User } = require("../models/user.model");
 const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
-
+const { SchemaType } = require("mongoose");
+const nodemailer = require("nodemailer");
 ////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////
@@ -103,6 +104,15 @@ const signin = async (req, res, next) => {
 ///////////////////////////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////////////////////////
+var transporter = nodemailer.createTransport({
+  service: process.env.EMAIL_SERVICE,
+  host: process.env.EMAIL_HOST,
+  secure: true, // use SSL
+  auth: {
+    user: process.env.Email,
+    pass: process.env.Password,
+  },
+});
 const SendCodeForgot = async (req, res, next) => {
   const userMail = await User.findOne({ email: req.body.email.toLowerCase() });
   if (!userMail) {
@@ -115,7 +125,7 @@ const SendCodeForgot = async (req, res, next) => {
     //
 
     var mailOptions = {
-      from: process.env.EMAIL_USERNAME,
+      from: process.env.Email,
       to: req.body.email,
       text: "Forget Password?",
       subject: "Password Reset",
