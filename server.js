@@ -1,6 +1,7 @@
 const express = require("express");
 const mongoose = require("mongoose");
 const morgan = require("morgan");
+const path = require("path");
 //////////////////////////////////////////////////////////////////////////////
 const app = express();
 const PORT = process.env.PORT || 9090;
@@ -40,6 +41,9 @@ app.use("/api/favoriteShow", require("./routes/favoriteShow.route"));
 app.use("/api/reservation", require("./routes/reservation.route"));
 
 //////////////////////////////////////////////////////////////////////////////
+app.use("/images", express.static(path.join(__dirname, "uploads","posts"))); //
+
+////////////////////////////////////////////:
 app.listen(PORT, () => {
   console.log(`Server running at http://localhost:${PORT}/`);
 });
