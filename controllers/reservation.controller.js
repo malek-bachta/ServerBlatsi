@@ -1,5 +1,8 @@
 const { reservation } = require("../models/reservation.model");
-
+const { events } = require("../models/events.model");
+const { movies } = require("../models/movies.model");
+const { shows } = require("../models/shows.model");
+var ObjectId = require("mongodb").ObjectID;
 //GetAllReservation
 const ShowReservationByUser = (req, res) => {
     reservation.find({ idUser: req.body.idUser }).exec(function (
@@ -10,25 +13,60 @@ const ShowReservationByUser = (req, res) => {
         else {
           console.log(dataReservation);
           console.log(dataReservation.length);
-          let total = "";
-          const List = [];
+          let totalshows = "";
+          let totalMovies = "";
+          let totalEvents = "";
+          //
+          const Listshows = [];
+          const ListMovies = [];
+          const ListEvents = [];
           if (dataReservation.length > 0) {
             for (let i = 0; i < dataReservation.length; i++) {
-              total = dataReservation[i].idEvent.toString();
-              console.log(total);
-              List.push(total);
+              if(dataReservation[i].idShow!=null){  
+              totalshows = dataReservation[i].idShow.toString();
+              Listshows.push(totalshows);
+              console.log(totalshows);
+             }
+              ///
+              if(dataReservation[i].idMovie!=null){
+                totalMovies = dataReservation[i].idMovie.toString();
+                ListMovies.push(totalMovies);
+              }
+              //
+              if(dataReservation[i].idEvent!=null){
+                totalEvents = dataReservation[i].idEvent.toString();
+                ListEvents.push(totalEvents);
+              }
             }
-            console.log("aaaaaaaaaaaaa"+List);
-            var obj_ids = List.map(function (id) {
+            var obj_idsshows = Listshows.map(function (id) {
               return ObjectId(id);
             });
-            events.find({ _id: { $in: obj_ids } }).exec(function (
-              err,
-              dataevents
-            ) {
-              if (err) res.status(500).send(err);
-              else res.send(dataevents);
-            });
+             let aashows =  shows.find({ _id: { $in: obj_idsshows } })
+            /////////////////////////////////////// 
+              var obj_idsMovies = ListMovies.map(function (id) {
+                return ObjectId(id);
+              });
+              let aaMovies =  movies.find({ _id: { $in: obj_idsMovies } })
+            ///////////////////////////////////////
+            var obj_idsEvents = ListEvents.map(function (id) {
+                return ObjectId(id);
+              });
+              let aaEvents =  events.find({ _id: { $in: obj_idsEvents } })
+            Promise.all([aashows, aaMovies,aaEvents]).then(result => {
+                // do your things 
+                //results will be array and you can get 
+                //response of prom1 in result[0]
+                //response of prom1 in result[1]
+                 //pass the data to view
+                 res.send({result});
+             }).catch(err => {
+          //handle your error here
+              // console.log(Error : ${err});
+             })
+                      
+        
+
+
           }
         }
       })};
@@ -38,10 +76,8 @@ const AddReservationM = async (req, res, next) => {
     if (!idMovie || !idUser || !seats) {
         res.json({ error: "please add all the feilds" });
     }
-    const movie = await reservation.findOne({ idMovie: idMovie });
-    if (movie) {
-        res.json({ error: "This reservation exists" });
-    } else
+    
+     else
         try {
             const movieData = new reservation({
                 idMovie: idMovie,
@@ -67,10 +103,7 @@ const AddReservationE = async (req, res, next) => {
     if (!idEvent || !idUser || !seats) {
         res.json({ error: "please add all the feilds" });
     }
-    const event = await reservation.findOne({ idEvent: idEvent });
-    if (event) {
-        res.json({ error: "This reservation exists" });
-    } else
+    else
         try {
             const eventData = new reservation({
                 idEvent: idEvent,
@@ -95,10 +128,6 @@ const AddReservationS = async (req, res, next) => {
     const { idShow, idUser, seats } = req.body;
     if (!idShow || !idUser || !seats) {
         res.json({ error: "please add all the feilds" });
-    }
-    const show = await reservation.findOne({ idShow: idShow });
-    if (show) {
-        res.json({ error: "This reservation exists" });
     }
     else
         try {

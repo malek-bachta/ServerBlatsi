@@ -25,6 +25,17 @@ const AddEvent = async (req, res, next) => {
     res.json({ error: "This event exists" });
   } else
     try {
+      //
+    const file = req.file;
+
+    if (!file) {
+      const error = new Error("Please upload a file");
+      error.httpStatusCode = 400;
+      console.log("error", "Please upload a file");
+      res.send({ code: 500, msg: "Please upload a file" });
+      return next({ code: 500, msg: error });
+    }
+    //
       const event = new events({
         title,
         date,
@@ -34,7 +45,7 @@ const AddEvent = async (req, res, next) => {
         description,
         guest,
         pAvailable,
-        image,
+        image:file.filename,
       });
       event
         .save()
