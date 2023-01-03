@@ -1,6 +1,7 @@
 const express = require("express");
 const router = express.Router();
 const moviesController = require("../controllers/movies.controller");
+const CheckFolderUpload = require("../middleware/CheckFolderUpload");
 
 var multer, storage, path, crypto;
 multer = require("multer");
@@ -35,6 +36,6 @@ router.get("/all", moviesController.ShowMovies);
 router.post("/update", moviesController.UpdateMovie);
 router.delete("/delete", moviesController.deletem);
 
-router.post("/add", upload.single("image"), moviesController.AddMovie); // Upload Avatar
+router.post("/add", upload.single("image"),CheckFolderUpload, moviesController.AddMovie); // Upload Avatar
 
 module.exports = router;
